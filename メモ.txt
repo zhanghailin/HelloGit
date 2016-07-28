@@ -1,0 +1,38 @@
+void clicked()
+{
+    VendConsInvoice_JP      vendConsInvoice_JPLocal;
+    MultiSelectionHelper    helper = MultiSelectionHelper::construct();
+
+    container consId;
+    Args                    m_Args;
+    MenuFunction            m_MenuFunction;
+    ;
+
+    super();
+
+    if(!vendConsInvoice_JP)
+    {
+        UtilsLog::info(strFmt("@AAA10056"));
+        return;
+    }
+
+    helper.parmDatasource(vendConsInvoice_JP_ds);
+    vendConsInvoice_JPLocal = helper.getFirst();
+    while(vendConsInvoice_JPLocal.RecId != 0)
+    {
+        consId += vendConsInvoice_JPLocal.ConsId;
+        vendConsInvoice_JPLocal = helper.getNext();
+    }
+
+
+    if(consId)
+    {
+        m_Args = new Args();
+        m_MenuFunction = new MenuFunction(classStr(ApVendConsInvoiceController),
+                                            MenuItemType::Action);
+        m_Args.parm(strFmt("%1",con2Str(consId,",")));
+        m_MenuFunction.run(m_Args);
+        VendConsInvoice_JP_ds.reread();
+        VendConsInvoice_JP_ds.refresh();
+    }
+}
